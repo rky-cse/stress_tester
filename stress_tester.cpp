@@ -197,7 +197,7 @@ void runProgram(const std::string &filename, const std::string &uniqueID, const 
         {
             // If we timed out
             KillProcessByName((filename + uniqueID + ".exe").c_str()); // Replace with the actual process name
-            std::cerr << "Time Taken by " << filename.substr(0, 7) << ": TIME LIMIT EXCEEDED\n";
+            std::cerr << "Time Taken by " << filename << ": TIME LIMIT EXCEEDED\n";
             TLE_FLAG = true;
         }
     }
