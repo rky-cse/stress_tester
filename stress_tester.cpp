@@ -14,24 +14,38 @@
 #include <fstream>
 #include <sstream>
 
-// init()========================================================================
-const int TIME_LIMIT = 5; // in seconds
+//init()========================================================================
+const int TIME_LIMIT=10;//in seconds
 
-const int NUMBER_OF_TEST_CASES = 100;
 
-std::string test_case_generator = "test_case_generator"; // file name without ".cpp";
 
-std::string brute_force_code = "a"; // file name without ".cpp";
 
-std::string optimized_code = "b"; // file name without ".cpp";
+const int NUMBER_OF_TEST_CASES=1000;
+
+
+
+std::string test_case_generator="test_case_generator";// file name without ".cpp";
+
+
+
+std::string brute_force_code="brute_force_code";// file name without ".cpp";
+
+
+
+
+std::string optimized_code="optimized_code";  // file name without ".cpp";
+
+
 
 //========================================================================
+
+
 
 void createFile(const std::string &fileName)
 {
     std::ofstream newFile(fileName);
-    // if (newFile)
-    //  newFile << "This is a newly created file.\n";
+    //if (newFile)
+    // newFile << "This is a newly created file.\n";
 }
 
 bool KillProcessByName(const char *filename)
@@ -49,16 +63,16 @@ bool KillProcessByName(const char *filename)
     {
         do
         {
-            // std::cout << "Checking process: " << pe.szExeFile << std::endl;
+           // std::cout << "Checking process: " << pe.szExeFile << std::endl;
             if (strcmp(pe.szExeFile, filename) == 0)
             {
-                // std::cout << "Found process: " << pe.szExeFile << " with PID: " << pe.th32ProcessID << std::endl;
+               // std::cout << "Found process: " << pe.szExeFile << " with PID: " << pe.th32ProcessID << std::endl;
                 HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0, pe.th32ProcessID);
                 if (hProcess != nullptr)
                 {
                     TerminateProcess(hProcess, 0);
                     CloseHandle(hProcess);
-                    // std::cout << "Process " << filename << " terminated successfully." << std::endl;
+                    //std::cout << "Process " << filename << " terminated successfully." << std::endl;
                     CloseHandle(hSnapshot);
                     return true;
                 }
@@ -74,6 +88,7 @@ bool KillProcessByName(const char *filename)
     CloseHandle(hSnapshot);
     return false;
 }
+
 
 #ifdef _WIN32
 #include <windows.h>
@@ -157,22 +172,22 @@ bool fileExists(const std::string &filename)
 // Function to compile the C++ file with ONLINE_JUDGE macro defined
 bool compile(const std::string &filename, const std::string &uniqueID)
 {
-    if (!fileExists(filename))
+      if (!fileExists(filename))
     {
         std::cerr << "Error: File not found: " << filename << std::endl;
         return 0;
     }
     std::string unique_name = filename + uniqueID;
     std::string compileCommand = std::string(COMPILE_COMMAND) + " " + filename + ".cpp -o " + unique_name + " -DONLINE_JUDGE";
-    // std::cout << "Running compile command: " << compileCommand << std::endl;
+    //std::cout << "Running compile command: " << compileCommand << std::endl;
     int result = system(compileCommand.c_str());
     return result == 0; // Compilation successful if result is 0
 }
 
-void runProgram(const std::string &filename, const std::string &uniqueID, const std::string &input_file_name, const std::string &output_file_name, bool &TLE_FLAG)
+void runProgram(const std::string &filename,const std::string &uniqueID, const std::string &input_file_name, const std::string &output_file_name,bool &TLE_FLAG)
 {
-    TLE_FLAG = false;
-    std::string command = filename + uniqueID + "< " + input_file_name + " > " + output_file_name; // Replace "your_program"
+    TLE_FLAG=false;
+    std::string command = filename+uniqueID + "< " + input_file_name + " > " + output_file_name; // Replace "your_program"
 
     auto start = std::chrono::high_resolution_clock::now();
     std::atomic<bool> finished(false);
@@ -196,9 +211,10 @@ void runProgram(const std::string &filename, const std::string &uniqueID, const 
                          { return finished.load(); }))
         {
             // If we timed out
-            KillProcessByName((filename + uniqueID + ".exe").c_str()); // Replace with the actual process name
-            std::cerr << "Time Taken by " << filename << ": TIME LIMIT EXCEEDED\n";
-            TLE_FLAG = true;
+            KillProcessByName((filename+ uniqueID + ".exe").c_str()); // Replace with the actual process name
+            std::cerr <<"Time Taken by "<<filename<< ": TIME LIMIT EXCEEDED\n";
+            TLE_FLAG=true;
+            
         }
     }
 
@@ -208,10 +224,12 @@ void runProgram(const std::string &filename, const std::string &uniqueID, const 
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed = end - start;
         // std::cout << "Program executed successfully." << std::endl;
-        std::cerr << "Time Taken By " << filename << ": " << (elapsed.count()) * 1000 << " ms.\n";
+        std::cerr << "Time Taken By " << filename  << ": " << (elapsed.count()) * 1000 << " ms.\n";
+        
     }
     // Ensure thread cleanup
     runner.join();
+
 }
 
 int main()
@@ -222,6 +240,7 @@ int main()
     createFile("brute_force_code_output.txt");
     createFile("optimized_code_output.txt");
 
+
     // Step 2: Compile the brute force code with ONLINE_JUDGE defined
     std::string test_case_generator_uniqueID = getUniqueIdentifier();
     std::cerr << "Compiling " << test_case_generator << ".cpp ...\n\n";
@@ -230,8 +249,9 @@ int main()
         std::cerr << "Error: Compilation failed!" << std::endl;
         return 1;
     }
-    std::cout << test_case_generator << ".cpp Compilation successful!\n\n";
+    std::cout <<test_case_generator<< ".cpp Compilation successful!\n\n";
 
+   
     // Step 2: Compile the brute force code with ONLINE_JUDGE defined
     std::string brute_force_code_uniqueID = getUniqueIdentifier();
     std::cout << "Compiling " << brute_force_code << ".cpp ...\n\n";
@@ -240,7 +260,9 @@ int main()
         std::cerr << "Error: Compilation failed!" << std::endl;
         return 1;
     }
-    std::cout << brute_force_code << ".cpp Compilation successful!\n\n";
+    std::cout<<brute_force_code << ".cpp Compilation successful!\n\n";
+
+   
 
     // Step 2: Compile the optimized code with ONLINE_JUDGE defined
     std::string optimized_code_uniqueID = getUniqueIdentifier();
@@ -250,64 +272,55 @@ int main()
         std::cerr << "Error: Compilation failed!" << std::endl;
         return 1;
     }
-    std::cerr << optimized_code << ".cpp Compilation successful!\n\n";
+    std::cerr <<optimized_code<< ".cpp Compilation successful!\n\n";
 
-    for (int i = 1; i <= NUMBER_OF_TEST_CASES; i++)
+    
+    
+    for (int i=1;i<=NUMBER_OF_TEST_CASES;i++)
     {
-        bool TLE_FLAG = false;
-        bool BRUTE_TLE_FLAG = false;
+        bool TLE_FLAG=false;
+        bool BRUTE_TLE_FLAG=false;
 
-        runProgram(test_case_generator, test_case_generator_uniqueID, "test_case_generator_input.txt", "stress_tester_input_test_case.txt", TLE_FLAG);
-        if (TLE_FLAG)
-        {
-            std::cerr << "\ntest_case_generator crashed\n\n";
-            continue;
+        runProgram(test_case_generator , test_case_generator_uniqueID, "test_case_generator_input.txt", "stress_tester_input_test_case.txt",TLE_FLAG);
+        if(TLE_FLAG){
+            std:: cerr <<"\ntest_case_generator crashed\n\n";continue;
         }
-        runProgram(brute_force_code, brute_force_code_uniqueID, "stress_tester_input_test_case.txt", "brute_force_code_output.txt", BRUTE_TLE_FLAG);
-        runProgram(optimized_code, optimized_code_uniqueID, "stress_tester_input_test_case.txt", "optimized_code_output.txt", TLE_FLAG);
-        if (!BRUTE_TLE_FLAG and TLE_FLAG)
-        {
-            std::cerr << "\nFailed on Test Case " << i << "\n\n\n";
-            std::cerr << "input: \n"
-                      << read_file("stress_tester_input_test_case.txt") << "\n\n";
-            std::cerr << "brute_force_code output:\n"
-                      << read_file("brute_force_code_output.txt") << "\n\n";
+        runProgram(brute_force_code , brute_force_code_uniqueID, "stress_tester_input_test_case.txt", "brute_force_code_output.txt",BRUTE_TLE_FLAG);
+        runProgram(optimized_code , optimized_code_uniqueID, "stress_tester_input_test_case.txt", "optimized_code_output.txt",TLE_FLAG);
+        if(!BRUTE_TLE_FLAG and TLE_FLAG){
+            std::cerr << "\nFailed on Test Case "<<i<<"\n\n\n";
+            std::cerr << "input: \n" << read_file("stress_tester_input_test_case.txt") << "\n\n";
+            std::cerr<<"brute_force_code output:\n"<<read_file("brute_force_code_output.txt")<<"\n\n";
 
             break;
         }
-        else if (BRUTE_TLE_FLAG and TLE_FLAG)
-        {
-            std::cerr << "\nFailed on Test Case " << i << "\n\n\n";
-            std::cerr << "input: \n"
-                      << read_file("stress_tester_input_test_case.txt") << "\n\n";
+        else if(BRUTE_TLE_FLAG and TLE_FLAG){
+            std::cerr << "\nFailed on Test Case "<<i<<"\n\n\n";
+            std::cerr << "input: \n" << read_file("stress_tester_input_test_case.txt") << "\n\n";
             break;
+
         }
-        else if (BRUTE_TLE_FLAG and !TLE_FLAG)
-        {
-            std::cerr << "\noptimized code ran on testcase: " << i << "\n\n";
-            std::cerr << "input: \n"
-                      << read_file("stress_tester_input_test_case.txt") << "\n\n";
-            std::cerr << "optimized_code_output: \n"
-                      << read_file("optimized_code_output.txt") << "\n\n";
-            continue;
+        else if(BRUTE_TLE_FLAG and !TLE_FLAG){
+           std::cerr<<"\noptimized code ran on testcase: "<<i<<"\n\n";
+           std::cerr << "input: \n" << read_file("stress_tester_input_test_case.txt") << "\n\n";
+           std::cerr << "optimized_code_output: \n" << read_file("optimized_code_output.txt") << "\n\n";
+           continue;
         }
+
 
         std::string b = read_file(("brute_force_code_output.txt"));
         std::string o = read_file(("optimized_code_output.txt"));
 
         if (compare(b, o))
         {
-            std::cerr << "\nTest Case " << i << " Passed\n\n\n";
+            std::cerr << "\nTest Case "<<i<<" Passed\n\n\n";
         }
         else
         {
-            std::cerr << "\nFailed on Test Case " << i << "\n\n\n";
-            std::cerr << "input: \n"
-                      << read_file("stress_tester_input_test_case.txt") << "\n\n";
-            std::cerr << "optimized_code_output: \n"
-                      << o << "\n\n";
-            std::cerr << "brute_force_code_output: \n"
-                      << b << "\n\n";
+            std::cerr << "\nFailed on Test Case "<<i<<"\n\n\n";
+            std::cerr << "input: \n" << read_file("stress_tester_input_test_case.txt") << "\n\n";
+            std::cerr << "optimized_code_output: \n" << o << "\n\n";
+            std::cerr << "brute_force_code_output: \n" << b << "\n\n";
 
             break;
         }
@@ -319,3 +332,4 @@ int main()
 
     return 0;
 }
+
